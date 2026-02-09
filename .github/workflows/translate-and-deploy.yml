@@ -1,0 +1,33 @@
+name: Translate and Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/content/blog/**'
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm install
+
+      - name: Translate posts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node scripts/translate-all.mjs
+
+      - name: Commit translations
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/content/blog/
+          git diff --staged --quiet || git commit -m "Auto-translate blog posts"
+          git push
