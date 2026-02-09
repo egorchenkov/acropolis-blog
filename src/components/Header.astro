@@ -1,0 +1,74 @@
+---
+interface Props {
+  lang: 'ru' | 'en' | 'uz';
+}
+
+const { lang } = Astro.props;
+
+const nav: Record<string, { home: string; blog: string }> = {
+  ru: { home: 'Главная', blog: 'Блог' },
+  en: { home: 'Home', blog: 'Blog' },
+  uz: { home: 'Bosh sahifa', blog: 'Blog' },
+};
+
+const t = nav[lang];
+
+const currentPath = Astro.url.pathname;
+
+const isPostPage = /^\/(?:ru|en|uz)\/blog\/.+/.test(currentPath);
+
+function langSwitchHref(targetLang: string) {
+  if (isPostPage) {
+    return `/${targetLang}/blog/`;
+  }
+  return currentPath.replace(`/${lang}/`, `/${targetLang}/`);
+}
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-[#3129B1] text-white">
+  <div class="mx-auto flex h-[72px] max-w-[1140px] items-center justify-between px-8">
+    <a href={`/${lang}/`} class="flex items-center gap-3 font-bold text-white">
+      <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 101 102" fill="none" class="shrink-0">
+        <path d="M38.3247 0.860352C38.8389 -0.265376 40.4282 -0.293288 40.9819 0.813477L72.4703 68.4776C72.7317 69.0393 72.8624 69.3202 73.1083 69.477C73.3542 69.6338 73.664 69.6338 74.2835 69.6338H75.4998C76.9116 69.6338 77.6175 69.6338 77.9123 69.1712C78.2071 68.7086 77.909 68.0688 77.3127 66.7891L65.1451 40.6755C64.9496 40.256 64.8519 40.0462 64.8528 39.8227C64.8536 39.5991 64.953 39.3901 65.1517 38.9721L71.1836 26.2829C71.9661 24.6367 72.3574 23.8136 72.9891 23.8135C73.6208 23.8133 74.0125 24.6362 74.7958 26.2821L95.9946 70.8232L100.333 80.6064C100.895 81.8738 101.176 82.5076 100.881 82.9623C100.585 83.4171 99.8915 83.4171 98.505 83.4172L85.0601 83.418L82.5597 83.4175C81.1483 83.4173 80.4426 83.4172 80.1477 83.8796C79.8528 84.342 80.1506 84.9818 80.7461 86.2614L86.4603 98.5401C87.0557 99.8194 87.3534 100.459 87.0586 100.921C86.7638 101.384 86.0582 101.384 84.6471 101.384L69.7541 101.385C69.0857 101.385 68.7515 101.385 68.495 101.208C68.2384 101.03 68.1201 100.718 67.8835 100.093L63.0706 87.376C62.834 86.7509 62.7157 86.4384 62.4591 86.2612C62.2026 86.084 61.8684 86.084 61.2 86.084H22.5329C21.1105 86.084 20.3992 86.084 20.1049 85.6182C19.8106 85.1523 20.1159 84.51 20.7266 83.2253L26.7489 70.5564C27.0126 70.0017 27.1445 69.7243 27.3892 69.5697C27.6339 69.415 27.941 69.415 28.5552 69.415H52.492C53.8358 69.415 54.5077 69.415 54.805 68.9739C55.1023 68.5328 54.8501 67.91 54.3458 66.6644L41.5344 35.0236C40.7198 33.0116 40.3125 32.0056 39.6284 32.0151C38.9444 32.0246 38.5652 33.0415 37.8067 35.0754L26.7437 64.7412L17.1417 84.9426C16.878 85.4973 16.7461 85.7747 16.5014 85.9294C16.2567 86.084 15.9496 86.084 15.3353 86.084H2.514C1.11259 86.084 0.411878 86.084 0.116668 85.6246C-0.178543 85.1652 0.112557 84.5279 0.694756 83.2531L38.3247 0.860352ZM71.1952 18.7162C71.3961 19.1384 71.4966 19.3495 71.4966 19.5752C71.4967 19.8009 71.3963 20.0121 71.1955 20.4344L65.201 33.044C64.4112 34.7053 64.0163 35.536 63.3817 35.5336C62.7471 35.5311 62.3587 34.6974 61.5818 33.0299L55.9511 20.9446C55.7369 20.485 55.6299 20.2552 55.6399 20.012C55.65 19.7689 55.7757 19.5487 56.0271 19.1084L62.5031 7.7647C63.3359 6.30589 63.7523 5.57648 64.3577 5.59905C64.963 5.62162 65.324 6.38001 66.0459 7.89679L71.1952 18.7162Z" fill="white"/>
+      </svg>
+      <span class="text-lg">ACROPOLIS INTEGRO</span>
+    </a>
+
+    <nav class="flex items-center gap-8">
+      <a
+        href={`/${lang}/`}
+        class:list={[
+          'font-medium text-white/70 transition-colors hover:text-white',
+          currentPath === `/${lang}/` && 'text-white',
+        ]}
+      >
+        {t.home}
+      </a>
+      <a
+        href={`/${lang}/blog/`}
+        class:list={[
+          'font-medium text-white/70 transition-colors hover:text-white',
+          currentPath.startsWith(`/${lang}/blog`) && 'text-white',
+        ]}
+      >
+        {t.blog}
+      </a>
+
+      <div class="relative ml-2 group">
+        <button class="rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white transition-colors hover:bg-white/25">
+          {lang.toUpperCase()}
+        </button>
+        <div class="invisible absolute right-0 top-full z-50 mt-1 min-w-[48px] rounded-xl bg-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
+          {(['ru', 'en', 'uz'] as const).filter(l => l !== lang).map((l) => (
+            <a
+              href={langSwitchHref(l)}
+              class="block px-4 py-2 text-center text-xs font-bold text-[#3129B1] transition-colors hover:bg-[#f0f0ff]"
+            >
+              {l.toUpperCase()}
+            </a>
+          ))}
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>

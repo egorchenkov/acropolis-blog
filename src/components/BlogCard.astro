@@ -1,0 +1,50 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  slug: string;
+  lang: 'ru' | 'en' | 'uz';
+  image?: string;
+}
+
+const { title, description, date, slug, lang, image } = Astro.props;
+
+const formattedDate = date.toLocaleDateString(lang === 'uz' ? 'uz-UZ' : lang, {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class="group overflow-hidden rounded-2xl border border-[#eeeef5] bg-white transition-all hover:-translate-y-1 hover:border-[#c8c5ff] hover:shadow-[0_16px_48px_rgba(49,41,177,0.1)]">
+  {image && (
+    <a href={`/${lang}/blog/${slug}/`}>
+      <img
+        src={image}
+        alt={title}
+        class="aspect-video w-full object-cover"
+      />
+    </a>
+  )}
+  <div class="p-6">
+  <time class="text-sm font-semibold text-[#3129B1]" datetime={date.toISOString()}>
+    {formattedDate}
+  </time>
+  <h2 class="mt-2 text-xl font-bold leading-tight text-[#222235]">
+    <a href={`/${lang}/blog/${slug}/`} class="transition-colors group-hover:text-[#3129B1]">
+      {title}
+    </a>
+  </h2>
+  <p class="mt-2 text-[#3a3a52] leading-relaxed">
+    {description}
+  </p>
+  <a
+    href={`/${lang}/blog/${slug}/`}
+    class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#3129B1] transition-[gap] hover:gap-2"
+  >
+    {lang === 'ru' ? 'Подробнее' : lang === 'uz' ? "Batafsil" : 'Read more'}
+    <span>→</span>
+  </a>
+  </div>
+</article>

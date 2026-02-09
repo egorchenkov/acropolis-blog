@@ -1,0 +1,52 @@
+local_backend: true
+
+backend:
+  name: git-gateway
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+locale: "ru"
+
+collections:
+  - name: "blog-ru"
+    label: "Блог (Русский)"
+    folder: "src/content/blog/ru"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Описание", name: "description", widget: "text" }
+      - { label: "Дата", name: "date", widget: "datetime" }
+      - { label: "Автор", name: "author", widget: "string", default: "ACROPOLIS INTEGRO" }
+      - { label: "Изображение", name: "image", widget: "image", required: false }
+      - { label: "Теги", name: "tags", widget: "list", required: false }
+      - { label: "Текст", name: "body", widget: "markdown" }
+
+  - name: "blog-en"
+    label: "Blog (English)"
+    folder: "src/content/blog/en"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Author", name: "author", widget: "string", default: "ACROPOLIS INTEGRO" }
+      - { label: "Image", name: "image", widget: "image", required: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "blog-uz"
+    label: "Blog (O'zbek)"
+    folder: "src/content/blog/uz"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Sarlavha", name: "title", widget: "string" }
+      - { label: "Tavsif", name: "description", widget: "text" }
+      - { label: "Sana", name: "date", widget: "datetime" }
+      - { label: "Muallif", name: "author", widget: "string", default: "ACROPOLIS INTEGRO" }
+      - { label: "Rasm", name: "image", widget: "image", required: false }
+      - { label: "Teglar", name: "tags", widget: "list", required: false }
+      - { label: "Matn", name: "body", widget: "markdown" }

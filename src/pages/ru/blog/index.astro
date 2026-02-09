@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../components/BaseLayout.astro';
+import BlogCard from '../../../components/BlogCard.astro';
+
+const allPosts = await getCollection('blog');
+const posts = allPosts
+  .filter((post) => post.id.startsWith('ru/'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout
+  title="Блог — ACROPOLIS INTEGRO"
+  description="Статьи и новости от ACROPOLIS INTEGRO"
+  lang="ru"
+>
+  <h1 class="text-3xl font-bold text-[#222235]">Блог</h1>
+  <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {posts.map((post) => (
+      <BlogCard
+        title={post.data.title}
+        description={post.data.description}
+        date={post.data.date}
+        slug={post.id.replace('ru/', '')}
+        lang="ru"
+        image={post.data.image}
+      />
+    ))}
+  </div>
+</BaseLayout>

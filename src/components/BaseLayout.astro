@@ -1,0 +1,47 @@
+---
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  lang: 'ru' | 'en' | 'uz';
+}
+
+const { title, description, lang } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://acropolis.uz');
+
+const locales = ['ru', 'en', 'uz'] as const;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl.href} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {locales.map((locale) => (
+      <link
+        rel="alternate"
+        hreflang={locale}
+        href={new URL(
+          Astro.url.pathname.replace(`/${lang}/`, `/${locale}/`),
+          Astro.site ?? 'https://acropolis.uz'
+        ).href}
+      />
+    ))}
+  </head>
+  <body class="flex min-h-screen flex-col bg-[#f8f8fc] text-[#222235] antialiased">
+    <Header lang={lang} />
+    <main class="mx-auto w-full max-w-[1140px] flex-1 px-8 pt-[calc(72px+2rem)] pb-8">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

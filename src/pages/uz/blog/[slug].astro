@@ -1,0 +1,58 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../components/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const posts = allPosts.filter((post) => post.id.startsWith('uz/'));
+
+  return posts.map((post) => ({
+    params: { slug: post.id.replace('uz/', '') },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const formattedDate = post.data.date.toLocaleDateString('uz-UZ', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} lang="uz">
+  <article class="mx-auto max-w-3xl">
+    <a
+      href="/uz/blog/"
+      class="inline-flex items-center gap-1 text-sm font-semibold text-[#3129B1] transition-[gap] hover:gap-2"
+    >
+      ← Blogga qaytish
+    </a>
+
+    <header class="mt-6">
+      <time class="text-sm font-semibold text-[#3129B1]" datetime={post.data.date.toISOString()}>
+        {formattedDate}
+      </time>
+      <h1 class="mt-2 text-3xl font-bold text-[#222235] sm:text-4xl">
+        {post.data.title}
+      </h1>
+      <p class="mt-2 text-sm text-[#9898b0]">
+        {post.data.author}
+      </p>
+    </header>
+
+    {post.data.image && (
+      <img
+        src={post.data.image}
+        alt={post.data.title}
+        class="mt-8 w-full rounded-2xl"
+      />
+    )}
+
+    <div class="prose prose-lg mt-8 max-w-none prose-headings:text-[#222235] prose-a:text-[#3129B1]">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

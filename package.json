@@ -1,0 +1,26 @@
+{
+  "name": "acropolis-blog",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "cms": "npx decap-server",
+    "translate": "node --env-file=.env scripts/translate.mjs",
+    "watch:translate": "node --env-file=.env scripts/watch-translate.mjs",
+    "dev:full": "concurrently \"npm run dev\" \"npm run cms\" \"npm run watch:translate\""
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.74.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.17.1",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "chokidar": "^3.6.0",
+    "concurrently": "^9.2.1",
+    "decap-server": "^3.5.0"
+  }
+}
