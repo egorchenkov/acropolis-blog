@@ -1,7 +1,10 @@
-local_backend: true
+# local_backend: true
 
 backend:
-  name: git-gateway
+  name: github
+  repo: egorchenkov/acropolis-blog
+  branch: main
+  base_url: https://oauth.acropolis.uz
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
