@@ -54,11 +54,11 @@ function langSwitchHref(targetLang: string) {
         {t.blog}
       </a>
 
-      <div class="relative group">
-        <button class="rounded-full bg-white/15 px-3 sm:px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white transition-colors hover:bg-white/25">
+      <div class="relative">
+        <button id="lang-toggle" class="rounded-full bg-white/15 px-3 sm:px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white transition-colors hover:bg-white/25">
           {lang.toUpperCase()}
         </button>
-        <div class="invisible absolute right-0 top-full z-50 mt-1 min-w-[48px] rounded-xl bg-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
+        <div id="lang-dropdown" class="invisible absolute right-0 top-full z-50 mt-1 min-w-[48px] rounded-xl bg-white opacity-0 shadow-lg transition-all">
           {(['ru', 'en', 'uz'] as const).filter(l => l !== lang).map((l) => (
             <a
               href={langSwitchHref(l)}
@@ -72,3 +72,19 @@ function langSwitchHref(targetLang: string) {
     </nav>
   </div>
 </header>
+
+<script>
+  document.addEventListener('click', (e) => {
+    const toggle = document.getElementById('lang-toggle');
+    const dropdown = document.getElementById('lang-dropdown');
+    if (!toggle || !dropdown) return;
+
+    if (toggle.contains(e.target as Node)) {
+      dropdown.classList.toggle('invisible');
+      dropdown.classList.toggle('opacity-0');
+    } else if (!dropdown.contains(e.target as Node)) {
+      dropdown.classList.add('invisible');
+      dropdown.classList.add('opacity-0');
+    }
+  });
+</script>
