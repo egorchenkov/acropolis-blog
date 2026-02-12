@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, unlinkSync } from 'fs';
 import { basename, join } from 'path';
 import Anthropic from '@anthropic-ai/sdk';
 
@@ -24,6 +24,36 @@ function addTranslatedFlag(content) {
   return content.replace(/^---\n/, '---\ntranslated: true\n');
 }
 
+// Phase 1: Remove orphaned translations (translated files whose original no longer exists)
+let cleaned = 0;
+for (const lang of LANGS) {
+  const dir = join(BLOG_DIR, lang);
+  if (!existsSync(dir)) continue;
+
+  const files = readdirSync(dir).filter((f) => f.endsWith('.md'));
+  for (const file of files) {
+    const filePath = join(dir, file);
+    const content = readFileSync(filePath, 'utf-8');
+    if (!hasTranslatedFlag(content)) continue;
+
+    // Check if an original (non-translated) version exists in any other language
+    const hasOriginal = LANGS.filter((l) => l !== lang).some((otherLang) => {
+      const otherPath = join(BLOG_DIR, otherLang, file);
+      if (!existsSync(otherPath)) return false;
+      const otherContent = readFileSync(otherPath, 'utf-8');
+      return !hasTranslatedFlag(otherContent);
+    });
+
+    if (!hasOriginal) {
+      unlinkSync(filePath);
+      cleaned++;
+      console.log(`Cleaned orphan: ${lang}/${file}`);
+    }
+  }
+}
+if (cleaned > 0) console.log(`Cleaned ${cleaned} orphaned translation(s).`);
+
+// Phase 2: Translate missing files
 async function translate(text, sourceLang, targetLang) {
   const message = await client.messages.create({
     model: 'claude-sonnet-4-5-20250929',

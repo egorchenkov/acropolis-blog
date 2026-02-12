@@ -10,7 +10,8 @@
     "cms": "npx decap-server",
     "translate": "node --env-file=.env scripts/translate.mjs",
     "watch:translate": "node --env-file=.env scripts/watch-translate.mjs",
-    "dev:full": "concurrently \"npm run dev\" \"npm run cms\" \"npm run watch:translate\""
+    "dev:full": "concurrently \"npm run dev\" \"npm run cms\" \"npm run watch:translate\"",
+    "cleanup": "node scripts/cleanup-orphan-media.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",
