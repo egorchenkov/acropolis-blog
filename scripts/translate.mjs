@@ -33,7 +33,7 @@ const client = new Anthropic();
 async function translate(text, targetLang) {
   const message = await client.messages.create({
     model: 'claude-sonnet-4-5-20250929',
-    max_tokens: 4096,
+    max_tokens: 16384,
     messages: [
       {
         role: 'user',
@@ -50,6 +50,10 @@ ${text}`,
       },
     ],
   });
+
+  if (message.stop_reason === 'max_tokens') {
+    throw new Error(`Translation truncated (hit max_tokens). Source may be too long for ${LANG_NAMES[targetLang]}.`);
+  }
 
   return message.content[0].text;
 }
