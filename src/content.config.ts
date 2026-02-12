@@ -8,7 +8,10 @@ const blog = defineCollection({
     description: z.string(),
     date: z.coerce.date(),
     author: z.string(),
-    image: z.string().optional(),
+    image: z.string().refine(
+      (val) => val.startsWith('/uploads/') || val.startsWith('https://'),
+      { message: 'Image must be a local /uploads/ path or https:// URL' }
+    ).optional(),
     tags: z.array(z.string()).optional(),
   }),
 });

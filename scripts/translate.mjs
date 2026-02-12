@@ -1,13 +1,20 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { basename, dirname, join } from 'path';
+import { basename, dirname, join, resolve } from 'path';
 import Anthropic from '@anthropic-ai/sdk';
 
 const LANGS = ['ru', 'en', 'uz'];
 const LANG_NAMES = { ru: 'Russian', en: 'English', uz: 'Uzbek' };
+const BLOG_DIR = resolve('src/content/blog');
 
 const inputPath = process.argv[2];
 if (!inputPath) {
   console.error('Usage: npm run translate -- src/content/blog/ru/post.md');
+  process.exit(1);
+}
+
+const resolvedInput = resolve(inputPath);
+if (!resolvedInput.startsWith(BLOG_DIR)) {
+  console.error('Error: input path must be inside src/content/blog/');
   process.exit(1);
 }
 
@@ -51,8 +58,12 @@ for (const targetLang of targetLangs) {
   console.log(`Translating to ${LANG_NAMES[targetLang]}...`);
   const translated = await translate(source, targetLang);
   const targetDir = join(dirname(inputPath).replace(`/blog/${sourceLang}`, `/blog/${targetLang}`));
+  const targetPath = resolve(join(targetDir, filename));
+  if (!targetPath.startsWith(BLOG_DIR)) {
+    console.error(`Error: target path escapes blog directory: ${targetPath}`);
+    process.exit(1);
+  }
   mkdirSync(targetDir, { recursive: true });
-  const targetPath = join(targetDir, filename);
   writeFileSync(targetPath, translated);
   console.log(`  Saved: ${targetPath}`);
 }
